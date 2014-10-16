@@ -1,7 +1,5 @@
-s.boot;
-
 (
-SynthDef("loopMe", {
+SynthDef(\sinTrig_test, {
 	// This synth will send a trigger at the trigger time. FreeSelf is used to free the synth just after
 	// the envelopes duration so SendTrig can send if trigger time == envelopesDuration
 	var env, trigTime, envGen, freq, dcOne;
@@ -14,22 +12,20 @@ SynthDef("loopMe", {
 	Out.ar(0, SinOsc.ar(freq) * envGen * 0.5);
 	SendTrig.kr(TDelay.kr(dcOne, trigTime));
 	FreeSelf.kr(TDelay.kr(dcOne, env.duration + 0.001));
-}).send(s);
-~envListener.free;
+}).writeDefFile();
 )
 
 (
-~envListener.free;
-~envListener = OSCFunc({
-	~loopMe = Synth(\loopMe);
-}, \tr, s.addr);
-~loopMe = Synth(\loopMe);
+SynthDef(\retrigSin_test, {
+	arg newFreq, durationTofreq, t_trig;
+	var env,freqEnv, ampEnv, outSig;
+
+	env = Env();
+	freqEnv = EnvGen.kr(env, t_trig, newFreq);
+	ampEnv = EnvGen.ar(env, t_trig);
+	outSig = SinOsc.ar(freqEnv) * ampEnv;
+
+	Out.ar(0, outSig);
+
+}).writeDefFile();
 )
-
-
-(
-~envListener.free;
-s.freeAll;
-)
-
-s.quit;
