@@ -15,6 +15,9 @@ s.freeAll;
 
 
 ~synthA = Synth(\retrigSin_test);
-~synthA.set(\t_trig, 1, \newFreq, rrand(500, 1000));
+~synthA.set(\gate, 1, \newFreq, rrand(300, 1100), \durationToFreq, 5);
+~synthA.set(\gate, -10); // fade out in (10-1) seconds! awesome
+~synthA.release(1); // same as above but release is more understandable!
+s.freeAll;
 
 s.quit;

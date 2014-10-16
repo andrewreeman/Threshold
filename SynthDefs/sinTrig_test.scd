@@ -17,15 +17,15 @@ SynthDef(\sinTrig_test, {
 
 (
 SynthDef(\retrigSin_test, {
-	arg newFreq, durationTofreq, t_trig;
+	arg gate = 0, newFreq = 440, durationToFreq = 1;
 	var env,freqEnv, ampEnv, outSig;
 
-	env = Env();
-	freqEnv = EnvGen.kr(env, t_trig, newFreq);
-	ampEnv = EnvGen.ar(env, t_trig);
+	env = Env(times: [0.5, 0.5], curve:\welch); // one second in total
+	freqEnv = EnvGen.kr(env, gate, newFreq, timeScale: durationToFreq);
+	ampEnv = EnvGen.ar(env, gate, timeScale: durationToFreq);
 	outSig = SinOsc.ar(freqEnv) * ampEnv;
 
 	Out.ar(0, outSig);
 
-}).writeDefFile();
+}, [\tr]).writeDefFile();
 )
